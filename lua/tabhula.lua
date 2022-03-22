@@ -13,14 +13,23 @@ function _G.tabhula_handler(direction, evil)
   local l
   local key
   local tab
+  local range = M.options.range
 
   -- set variables according to direction
   if direction == 0 then  -- forward
-    l = line:sub(col + 1)
+    if range == nil then
+      range = #line
+    end
+    l = line:sub(col + 1, math.max(#line, col + 1 + range))
     key = api.nvim_replace_termcodes("<C-i>", true, false, true)
     tab = M.options.forward_characters
   else  -- backward
-    l = line:sub(1, col):reverse()
+    if range == nil then
+      range = 1
+    else
+      range = math.max(col - range, 1)
+    end
+    l = line:sub(range, col):reverse()
     col = #l
     key = api.nvim_replace_termcodes("<C-d>", true, false, true)
     tab = M.options.backward_characters
@@ -44,6 +53,7 @@ function _G.tabhula_handler(direction, evil)
         local evil_keys = api.nvim_replace_termcodes("<Esc>ci" .. c, true, false, true)
         api.nvim_feedkeys(evil_keys, 'ni', false)
       else
+        if direction == 1 then col = col + range - 1 end
         api.nvim_win_set_cursor(0, {row, col})
       end
       break
