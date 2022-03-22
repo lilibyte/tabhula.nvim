@@ -63,10 +63,15 @@ end
 
 M.setup = function(options)
   M.options = vim.tbl_deep_extend("force", {}, config.defaults, options or {})
-  api.nvim_set_keymap('i', M.options.tabkey, "<cmd>lua tabhula_handler(0)<cr>", {})
-  api.nvim_set_keymap('i', M.options.backward_tabkey, "<cmd>lua tabhula_handler(1)<cr>", {})
-  api.nvim_set_keymap('i', M.options.evil_tabkey, "<cmd>lua tabhula_handler(0, 1)<cr>", {})
-  api.nvim_set_keymap('i', M.options.evil_backward_tabkey, "<cmd>lua tabhula_handler(1, 1)<cr>", {})
+  if M.options.tabkey ~= "" then
+    api.nvim_set_keymap('i', M.options.tabkey, "<cmd>lua tabhula_handler(0)<cr>", {})
+  elseif M.options.backward_tabkey ~= "" then
+    api.nvim_set_keymap('i', M.options.backward_tabkey, "<cmd>lua tabhula_handler(1)<cr>", {})
+  elseif M.options.evil_tabkey ~= "" then
+    api.nvim_set_keymap('i', M.options.evil_tabkey, "<cmd>lua tabhula_handler(0, 1)<cr>", {})
+  elseif M.options.evil_backward_tabkey ~= "" then
+    api.nvim_set_keymap('i', M.options.evil_backward_tabkey, "<cmd>lua tabhula_handler(1, 1)<cr>", {})
+  end
 end
 
 return M
