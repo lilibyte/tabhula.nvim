@@ -9,6 +9,13 @@ function _G.tabhula_handler(direction, evil)
   local row = cur[1]
   local line = api.nvim_get_current_line()
 
+  -- check if cursor is at a completion trigger
+  if M.options.completion and M.options.completion ~= "" then
+    if M.options.completion(direction) == 1 then
+      return
+    end
+  end
+
   -- fuck lua lol
   local l
   local key
@@ -65,11 +72,20 @@ M.setup = function(options)
   M.options = vim.tbl_deep_extend("force", {}, config.defaults, options or {})
   if M.options.tabkey ~= "" then
     api.nvim_set_keymap('i', M.options.tabkey, "<cmd>lua tabhula_handler(0)<cr>", {})
-  elseif M.options.backward_tabkey ~= "" then
+    if M.options.completion and M.options.completion ~= "" then
+      api.nvim_set_keymap('s', M.options.tabkey, "<cmd>lua tabhula_handler(0)<cr>", {})
+    end
+  end
+  if M.options.backward_tabkey ~= "" then
     api.nvim_set_keymap('i', M.options.backward_tabkey, "<cmd>lua tabhula_handler(1)<cr>", {})
-  elseif M.options.evil_tabkey ~= "" then
+    if M.options.completion and M.options.completion ~= "" then
+      api.nvim_set_keymap('s', M.options.backward_tabkey, "<cmd>lua tabhula_handler(1)<cr>", {})
+    end
+  end
+  if M.options.evil_tabkey ~= "" then
     api.nvim_set_keymap('i', M.options.evil_tabkey, "<cmd>lua tabhula_handler(0, 1)<cr>", {})
-  elseif M.options.evil_backward_tabkey ~= "" then
+  end
+  if M.options.evil_backward_tabkey ~= "" then
     api.nvim_set_keymap('i', M.options.evil_backward_tabkey, "<cmd>lua tabhula_handler(1, 1)<cr>", {})
   end
 end
