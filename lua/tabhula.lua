@@ -27,7 +27,7 @@ function _G.tabhula_handler(direction, evil)
     if range == nil then
       range = #line
     end
-    l = line:sub(col + 1, math.max(#line, col + 1 + range))
+    l = line:sub(col + 1, math.min(#line, col + 1 + range))
     key = api.nvim_replace_termcodes("<C-i>", true, false, true)
     tab = M.options.forward_characters
   else  -- backward
